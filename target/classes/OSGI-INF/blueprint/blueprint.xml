@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd                            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <bean class="com.swaggerapi.docs.Status" id="status"/>
+    <camelContext id="_context1" xmlns="http://camel.apache.org/schema/blueprint">
+        <restConfiguration apiContextListing="true"
+            apiContextPath="api-docs" bindingMode="json"
+            component="jetty" contextPath="applicationSwagger"
+            enableCORS="true" host="0.0.0.0" port="8083">
+            <!-- we want json output in pretty mode -->
+            <dataFormatProperty key="prettyPrint" value="true"/>
+            <!-- setup swagger api descriptions -->
+            <apiProperty key="base.path" value="rest"/>
+            <apiProperty key="api.version" value="1.0.2"/>
+            <apiProperty key="api.title" value="applicationSwagger"/>
+            <apiProperty key="api.description" value="Camel Rest Example with Swagger that provides an User REST service"/>
+            <apiProperty key="api.termsOfService" value="https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2/html/apache_camel_development_guide/restservices-swagger"/>
+            <apiProperty key="api.contact.name" value="test Api developed by Ashish"/>
+        </restConfiguration>
+        <rest consumes="application/json" id="DedupeResponseRoute"
+            path="/rest/CCA/dedupe" produces="application/json">
+            <post apiDocs="true" id="post-41" method="post"
+                type="com.swaggerapi.docs.DocApi" uri="dedupeResponse" outType="com.swaggerapi.docs.Users">
+                <description> this rest service </description>
+                <to id="_toabc" uri="direct:Test"/>
+            </post>
+        </rest>
+        <route id="_route:abc">
+            <from id="_from11" uri="direct:Test"/>
+            <bean id="_bean1" method="status" ref="status"/>
+            <log id="_log111" message="***************************"/>
+            <setBody id="_setBody1111">
+                <simple>{"firstName":"ashish"}</simple>
+            </setBody>
+        </route>
+    </camelContext>
+</blueprint>
